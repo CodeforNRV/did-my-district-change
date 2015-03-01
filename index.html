@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <style type="text/css">
+            #map-canvas { 
+                height: 400px; 
+                margin-top: 10px;
+            }
+            
+            #map-container {
+                padding: 10px;
+                border: solid 1px black;
+            }
+        </style>
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNsyojm0VjBde5v9AVunWHm1qBF2lCiKE"></script>
+        <script type="text/javascript">
+            var geocoder;
+            var map;
+            
+            function initialize() {
+                var mapOptions = {
+                    center: { lat: 37.5333, lng: -77.4667},
+                    zoom: 6
+                };
+                map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                geocoder = new google.maps.Geocoder();
+            }
+            
+            function geocodeAddress() {
+                var address = document.getElementById("address").value;
+                geocoder.geocode( { 'address': address}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                        map.setZoom(12);
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            }
+            
+            google.maps.event.addDomListener(window, 'load', initialize);
+            
+            $(function(){
+                $('#address').keyup(function(e){
+                    if(e.keyCode == 13) {
+                        geocodeAddress();
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <div id="map-container">
+                        <div>
+                            Search for a location: 
+                            <div class="input-group col-sm-6">
+                                <input id="address" class="form-control" type="text">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" onclick="codeAddress()">Search</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="map-canvas"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

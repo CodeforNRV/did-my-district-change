@@ -7,6 +7,7 @@
         <title>Did My District Change?</title>
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/twentytwenty.css" type="text/css" media="screen" />
         <style type="text/css">
             #map-canvas { 
                 height: 400px; 
@@ -26,6 +27,8 @@
         </style>
         
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
+        <script src="js/jquery.event.move.js" type="text/javascript"></script>
+        <script src="js/jquery.twentytwenty.js" type="text/javascript"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNsyojm0VjBde5v9AVunWHm1qBF2lCiKE"></script>
         <script type="text/javascript">
             var geocoder;
@@ -163,6 +166,8 @@
                         geocodeAddress();
                     }
                 });
+                
+                $("#house-before-after").twentytwenty();
             });
         </script>
     </head>
@@ -220,6 +225,11 @@
                 <h5>Track the bills</h5>
                 <div><a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1417">HB 1417 House of Delegates districts; technical adjustments.</a></div>
                 <div><a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1428">HB 1428 Senate districts; adjustments.</a></div>
+            </div>
+            
+            <div id="house-before-after">
+                <img src="images/house_before.png" />
+                <img src="images/house_after.png" />
             </div>
             
             <div class="footer">

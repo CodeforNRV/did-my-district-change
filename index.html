@@ -64,11 +64,11 @@
                 };
                 map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 geocoder = new google.maps.Geocoder();
-                map.data.loadGeoJson('https://github.com/CodeforNRV/did-my-district-change/raw/master/district-diff-maps/va_house_12_to_7_hb1417.geojson');
-                map.data.loadGeoJson('https://github.com/CodeforNRV/did-my-district-change/raw/master/district-diff-maps/va_house_12_to_8_hb1417.geojson');
-                map.data.loadGeoJson('https://github.com/CodeforNRV/did-my-district-change/raw/master/district-diff-maps/va_house_7_to_12_hb1417.geojson');
-                map.data.loadGeoJson('https://github.com/CodeforNRV/did-my-district-change/raw/master/district-diff-maps/va_house_8_to_12_hb1417.geojson');
-                map.data.loadGeoJson('https://github.com/CodeforNRV/did-my-district-change/raw/master/district-diff-maps/va_senate_38_to_19_hb1428.geojson');
+                map.data.loadGeoJson('district-diff-maps/va_house_12_to_7_hb1417.geojson');
+                map.data.loadGeoJson('district-diff-maps/va_house_12_to_8_hb1417.geojson');
+                map.data.loadGeoJson('district-diff-maps/va_house_7_to_12_hb1417.geojson');
+                map.data.loadGeoJson('district-diff-maps/va_house_8_to_12_hb1417.geojson');
+                map.data.loadGeoJson('district-diff-maps/va_senate_38_to_19_hb1428.geojson');
                 
                 map.data.setStyle({
                     fillColor: '#FF6600',

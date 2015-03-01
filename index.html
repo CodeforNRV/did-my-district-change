@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
         <style type="text/css">
             #map-canvas { 
                 height: 400px; 
@@ -12,6 +13,12 @@
                 padding: 10px;
                 border: solid 1px black;
             }
+            
+            #loading-results, #search-results {
+                display: none;
+                padding-top: 10px;
+                padding-bottom: 30px;
+            }
         </style>
         
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
@@ -21,6 +28,30 @@
             var map;
             var censusApiBase = 'http://geocoding.geo.census.gov/geocoder/geographies/coordinates?';
             var censusApiParams = '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&format=json';
+            
+            var districtChanges = {
+                '38 to 19': ['511210215003117', '511210215003118', '517500101023006'],
+                '7 to 12': ['511210201001044', '511210201001045', '511210201001046',
+                            '511210202021001', '511210203002032', '511210207004101',
+                            '511210207004102', '511210207004108', '511210207004109',
+                            '511210207004117', '511210207004120', '511210207004121',
+                            '511210207004124'],
+                '8 to 12': ['511210205004027', '511210205004028', '511210205004029',
+                            '511210205004030', '511210205004032', '511210205004033',
+                            '511210205004043'],
+                '12 to 7': ['511210201001054', '511210202011002', '511210202011004',
+                            '511210202011005', '511210208004105', '511210208004112',
+                            '511210208004114', '511210208004115', '511210208004116',
+                            '511210208004117', '511210208004118', '511210208004119',
+                            '511210208004120', '511210208004121', '511210208004124',
+                            '511210208004125', '511210208004126', '511210208004127',
+                            '511210208004128', '511210208004132', '511210208004133',
+                            '511210208004134'],
+                '12 to 8': ['511210208004135', '511210208004136', '511210208004137',
+                            '511210208004139', '511210208004144', '511210208004148',
+                            '511210208004151', '511210208004154', '511210208004157']
+            };
+            
             function initialize() {
                 var mapOptions = {
                     center: { lat: 37.2070304, lng: -80.4103956},
@@ -31,6 +62,9 @@
             }
             
             function geocodeAddress() {
+                $('#search-form').hide();
+                $('#loading-results').show();
+                
                 var address = $('#address-street').val();
                 address += ', ' + $('#address-city').val();
                 address += ', ' + $('#address-state').val();
@@ -41,6 +75,8 @@
                         map.setCenter(results[0].geometry.location);
                         map.setZoom(16);
                     } else {
+                        $('#loading-results').hide();
+                        $('#search-form').show();
                         alert('Address not found');
                     }
                 });
@@ -51,12 +87,36 @@
                 url += 'x=' + coordinates.lng() + '&y=' + coordinates.lat();
                 url += censusApiParams;
                 $.get(url, function(data){
+                    $('#loading-results').hide();
+                    
                     var censusBlocks = data.result.geographies['Census Blocks'];
                     if(censusBlocks.length < 0) {
+                        $('#loading-results').hide();
+                        $('#search-form').show();
                         alert('Error looking up address');
                     } else {
                         var blockId = censusBlocks[0]['GEOID'];
-                        console.log(blockId);
+                        var districtChange = null;
+                        for(var change in districtChanges) {
+                            if($.inArray(blockId, districtChanges[change]) !== -1) {
+                                districtChange = change;
+                            }
+                        }
+                        
+                        var content = '<h3>NO</h3><h5>Your districts did not change</h5>';
+                        if(districtChange){
+                            content = '<h3>YES</h3><h5>Your Virginia ';
+                            if(districtChange === '38 to 19')
+                                content += 'Senate';
+                            else
+                                content += 'House';
+                            content += ' district changed from ';
+                            content += districtChange;
+                        }
+                        
+                        $('#search-results').html(content);
+                        $('#loading-results').hide();
+                        $('#search-results').show();
                     }
                 });
             }
@@ -74,31 +134,59 @@
     </head>
     <body>
         <div class="container">
-            <div>Enter your address</div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <input id="address-street" class="form-control geocode-field" type="text" placeholder="Street">
+            <div class="text-center">
+                <h2>Will My District Change?</h2>
+                <div>
+                    <p>A couple of bills in the 2015 session of the Virginia General Assembly could slightly alter voting districts in Montgomery County. Enter your address to see if you will be affected.</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <input id="address-city" class="form-control geocode-field" type="text" placeholder="City">
+            
+            <div id="search-form">
+                <h4 class="text-center">Enter your address</h4>
+                <div class="row form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <input id="address-street" class="form-control geocode-field" type="text" placeholder="Street">
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <input id="address-state" class="form-control geocode-field" type="text" placeholder="State" value="VA">
+                <div class="row form-group">
+                    <div class="col-sm-4 col-sm-offset-3">
+                        <input id="address-city" class="form-control geocode-field" type="text" placeholder="City">
+                    </div>
+                    <div class="col-sm-2">
+                        <input id="address-state" class="form-control geocode-field" type="text" placeholder="State" value="VA">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button class="btn btn-primary btn-block" type="button" onclick="geocodeAddress()">Search</button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <button class="btn btn-primary btn-block" type="button" onclick="geocodeAddress()">Search</button>
-                </div>
+            
+            <div id="loading-results" class="text-center">
+                <h3><i class="fa fa-spinner fa-spin"></i> Loading</h3>
             </div>
+            
+            <div id="search-results" class="text-center">
+            </div>
+            
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-sm-8 col-sm-offset-2">
                     <div id="map-container">
                         <div id="map-canvas"></div>
                     </div>
                 </div>
+            </div>
+            
+            <h3>Details</h3>
+            <div>
+                <p>As <a href="http://www.roanoke.com/news/politics/montgomery_county/virginia-senate-passes-bill-to-simplify-montgomery-county-elections/article_24584a06-71b8-587e-afb3-163e11dda872.html">reported by the Roanoke Times</a>, Del. Joseph Yost, R-Pearisburg, has sponsored two bills that aim to reduce the differences between town borders and voting district boundaries.</p>
+            </div>
+            
+            <div class="footer">
+                <p class="pull-right">
+                    Built by <a href="http://codefornrv.org">Code for New River Valley</a> | <a href="https://github.com/codefornrv/did-my-district-change"><i class="fa fa-github"></i> Pull requests welcome!</a>
+                </p>
             </div>
         </div>
     </body>

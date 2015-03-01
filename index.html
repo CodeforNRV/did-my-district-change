@@ -141,11 +141,18 @@
                             content += districtChange;
                         }
                         
-                        $('#search-results').html(content);
+                        $('#search-results .content').html(content);
                         $('#loading-results').hide();
                         $('#search-results').show();
                     }
                 });
+            }
+            
+            function newAddress() {
+                $('#address-street').val('');
+                $('#address-city').val('');
+                $('#search-results').hide();
+                $('#search-form').show();
             }
             
             google.maps.event.addDomListener(window, 'load', initialize);
@@ -195,6 +202,8 @@
             </div>
             
             <div id="search-results" class="text-center">
+                <div class="content"></div>
+                <div><button class="btn btn-link btn-block" onclick="newAddress()">Try Another Address</div>
             </div>
             
             <div class="row">

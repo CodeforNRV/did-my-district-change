@@ -19,24 +19,44 @@
         <script type="text/javascript">
             var geocoder;
             var map;
-            
+            var censusApiBase = 'http://geocoding.geo.census.gov/geocoder/geographies/coordinates?';
+            var censusApiParams = '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&format=json';
             function initialize() {
                 var mapOptions = {
-                    center: { lat: 37.5333, lng: -77.4667},
-                    zoom: 6
+                    center: { lat: 37.2070304, lng: -80.4103956},
+                    zoom: 12
                 };
                 map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 geocoder = new google.maps.Geocoder();
             }
             
             function geocodeAddress() {
-                var address = document.getElementById("address").value;
+                var address = $('#address-street').val();
+                address += ', ' + $('#address-city').val();
+                address += ', ' + $('#address-state').val();
+                
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
+                        getCensusBlock(results[0].geometry.location);
                         map.setCenter(results[0].geometry.location);
-                        map.setZoom(12);
+                        map.setZoom(16);
                     } else {
-                        alert("Geocode was not successful for the following reason: " + status);
+                        alert('Address not found');
+                    }
+                });
+            }
+            
+            function getCensusBlock(coordinates) {
+                var url = censusApiBase;
+                url += 'x=' + coordinates.lng() + '&y=' + coordinates.lat();
+                url += censusApiParams;
+                $.get(url, function(data){
+                    var censusBlocks = data.result.geographies['Census Blocks'];
+                    if(censusBlocks.length < 0) {
+                        alert('Error looking up address');
+                    } else {
+                        var blockId = censusBlocks[0]['GEOID'];
+                        console.log(blockId);
                     }
                 });
             }
@@ -44,7 +64,7 @@
             google.maps.event.addDomListener(window, 'load', initialize);
             
             $(function(){
-                $('#address').keyup(function(e){
+                $('.geocode-field').keyup(function(e){
                     if(e.keyCode == 13) {
                         geocodeAddress();
                     }
@@ -54,18 +74,28 @@
     </head>
     <body>
         <div class="container">
+            <div>Enter your address</div>
             <div class="row">
-                <div class="col-xs-12 text-center">
+                <div class="col-sm-6">
+                    <input id="address-street" class="form-control geocode-field" type="text" placeholder="Street">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input id="address-city" class="form-control geocode-field" type="text" placeholder="City">
+                </div>
+                <div class="col-sm-2">
+                    <input id="address-state" class="form-control geocode-field" type="text" placeholder="State" value="VA">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary btn-block" type="button" onclick="geocodeAddress()">Search</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
                     <div id="map-container">
-                        <div>
-                            Search for a location: 
-                            <div class="input-group col-sm-6">
-                                <input id="address" class="form-control" type="text">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" onclick="codeAddress()">Search</button>
-                                </span>
-                            </div>
-                        </div>
                         <div id="map-canvas"></div>
                     </div>
                 </div>

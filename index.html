@@ -30,6 +30,7 @@
         <script type="text/javascript">
             var geocoder;
             var map;
+            var marker = null;
             var censusApiBase = 'http://geocoding.geo.census.gov/geocoder/geographies/coordinates?';
             var censusApiParams = '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&format=json';
             
@@ -75,9 +76,18 @@
                 
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
-                        getCensusBlock(results[0].geometry.location);
-                        map.setCenter(results[0].geometry.location);
+                        var position = results[0].geometry.location;
+                        getCensusBlock(position);
+                        
+                        map.setCenter(position);
                         map.setZoom(16);
+                        
+                        if(marker)
+                            marker.setMap(null);
+                        marker = new google.maps.Marker({
+                            position: position,
+                            map: map
+                        });
                     } else {
                         $('#loading-results').hide();
                         $('#search-form').show();

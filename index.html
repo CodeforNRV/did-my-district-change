@@ -38,6 +38,10 @@
                 margin-right: auto;
             }
             
+            #house-images img, #senate-images img {
+                max-width: 100%;
+            }
+            
             .diff {
                 display: none;
             }
@@ -200,11 +204,13 @@
                 $('input[name="senate-image-type"]').change(function() {
                     $('#senate-images > div').hide();
                     $('#senate-images > .' + $(this).attr('data-target')).show();
+                    window.dispatchEvent(new Event('resize'));
                 });
                 
                 $('input[name="house-image-type"]').change(function() {
                     $('#house-images > div').hide();
                     $('#house-images > .' + $(this).attr('data-target')).show();
+                    window.dispatchEvent(new Event('resize'));
                 });
             });
         </script>

@@ -225,7 +225,9 @@
                 });
                 
                 // These resize events seem to help twenty twenty images show up
-                window.dispatchEvent(new Event('resize'));
+                setTimeout(function() {
+                    window.dispatchEvent(new Event('resize'));
+                }, 500);
             });
         </script>
     </head>

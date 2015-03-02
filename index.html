@@ -66,7 +66,7 @@
             var map;
             var marker = null;
             var censusApiBase = 'http://geocoding.geo.census.gov/geocoder/geographies/coordinates?';
-            var censusApiParams = '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&format=json';
+            var censusApiParams = '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&format=jsonp';
             
             var districtChanges = {
                 '38 to 19': ['511210215003117', '511210215003118', '517500101023006'],
@@ -147,37 +147,48 @@
                 var url = censusApiBase;
                 url += 'x=' + coordinates.lng() + '&y=' + coordinates.lat();
                 url += censusApiParams;
-                $.get(url, function(data){
-                    $('#loading-results').hide();
+                $.ajax({
+                    type: "GET",
+                    dataType: "jsonp",
+                    contentType: "application/json",
+                    url: url,
+                    success: function(data) {
+                        $('#loading-results').hide();
                     
-                    var censusBlocks = data.result.geographies['Census Blocks'];
-                    if(censusBlocks.length < 0) {
+                        var censusBlocks = data.result.geographies['Census Blocks'];
+                        if(censusBlocks.length < 0) {
+                            $('#loading-results').hide();
+                            $('#search-form').show();
+                            alert('Error looking up address');
+                        } else {
+                            var blockId = censusBlocks[0]['GEOID'];
+                            var districtChange = null;
+                            for(var change in districtChanges) {
+                                if($.inArray(blockId, districtChanges[change]) !== -1) {
+                                    districtChange = change;
+                                }
+                            }
+                        
+                            var content = '<h3>NO</h3><h5>Your districts did not change</h5>';
+                            if(districtChange){
+                                content = '<h3>YES</h3><h5>Your Virginia ';
+                                if(districtChange === '38 to 19')
+                                    content += 'Senate';
+                                else
+                                    content += 'House';
+                                content += ' district changed from ';
+                                content += districtChange;
+                            }
+                        
+                            $('#search-results .content').html(content);
+                            $('#loading-results').hide();
+                            $('#search-results').show();
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
                         $('#loading-results').hide();
                         $('#search-form').show();
-                        alert('Error looking up address');
-                    } else {
-                        var blockId = censusBlocks[0]['GEOID'];
-                        var districtChange = null;
-                        for(var change in districtChanges) {
-                            if($.inArray(blockId, districtChanges[change]) !== -1) {
-                                districtChange = change;
-                            }
-                        }
-                        
-                        var content = '<h3>NO</h3><h5>Your districts did not change</h5>';
-                        if(districtChange){
-                            content = '<h3>YES</h3><h5>Your Virginia ';
-                            if(districtChange === '38 to 19')
-                                content += 'Senate';
-                            else
-                                content += 'House';
-                            content += ' district changed from ';
-                            content += districtChange;
-                        }
-                        
-                        $('#search-results .content').html(content);
-                        $('#loading-results').hide();
-                        $('#search-results').show();
+                        alert('There was a problem getting census data for that address');
                     }
                 });
             }

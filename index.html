@@ -223,6 +223,9 @@
                     $('#house-images > .' + $(this).attr('data-target')).show();
                     window.dispatchEvent(new Event('resize'));
                 });
+                
+                // These resize events seem to help twenty twenty images show up
+                window.dispatchEvent(new Event('resize'));
             });
         </script>
     </head>

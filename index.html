@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Did My District Change?</title>
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/twentytwenty.css" type="text/css" media="screen" />
         <style type="text/css">
             #map-canvas { 
@@ -27,12 +27,29 @@
             
             #house-before-after {
                 max-width: 454px;
+            }
+            
+            #senate-images {
+                max-width: 1080px;
+            }
+            
+            #house-before-after, #senate-images {
                 margin-left: auto;
                 margin-right: auto;
             }
+            
+            #senate-diff {
+                display: none;
+            }
+            
+            .image-buttons {
+                padding-bottom: 5px;
+                text-align: center;
+            }
         </style>
         
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" ></script>
         <script src="js/jquery.event.move.js" type="text/javascript"></script>
         <script src="js/jquery.twentytwenty.js" type="text/javascript"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNsyojm0VjBde5v9AVunWHm1qBF2lCiKE"></script>
@@ -174,6 +191,12 @@
                 });
                 
                 $("#house-before-after").twentytwenty();
+                $("#senate-compare").twentytwenty();
+                
+                $('input[name="senate-image-type"]').change(function() {
+                    $('#senate-images > div').hide();
+                    $('#senate-images > ' + $(this).attr('data-target')).show();
+                });
             });
         </script>
     </head>
@@ -228,14 +251,41 @@
             <h3>Details</h3>
             <div>
                 <p>As <a href="http://www.roanoke.com/news/politics/montgomery_county/virginia-senate-passes-bill-to-simplify-montgomery-county-elections/article_24584a06-71b8-587e-afb3-163e11dda872.html">reported by the Roanoke Times</a>, Del. Joseph Yost, R-Pearisburg, has sponsored two bills that aim to reduce the differences between town borders and voting district boundaries.</p>
-                <h5>Track the bills</h5>
-                <div><a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1417">HB 1417 House of Delegates districts; technical adjustments.</a></div>
-                <div><a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1428">HB 1428 Senate districts; adjustments.</a></div>
-            </div>
-            
-            <div id="house-before-after">
-                <img src="images/house_before.png" />
-                <img src="images/house_after.png" />
+                
+                <h4>House District Changes</h4>
+                <div>
+                    <a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1417">HB 1417 House of Delegates districts; technical adjustments.</a>
+                </div>
+                <p>The changes to the Virginia House Districts in Montgomery county are aimed at making the boundaries more closely match town borders. Use the slider on the image below to see how this bill will change the districts. District 7 in blue. District 8 in green. District 12 in yellow.</p>
+                <div id="house-before-after">
+                    <img src="images/house_before.png" />
+                    <img src="images/house_after.png" />
+                </div>
+                
+                <h4>Senate District Changes</h4>
+                <div>
+                    <a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1428">HB 1428 Senate districts; adjustments.</a>
+                </div>
+                <p>The changes to the Virginia Senate Districts are aimed moving a small portion of Montgomery county out of the district that covers Radford. Use the slider on the image below to see how this bill will change the districts. District 19 in blue. District 38 in green.</p>
+                <div class="image-buttons">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default active">
+                            <input type="radio" name="senate-image-type" data-target=".twentytwenty-wrapper" autocomplete="off" checked> Compare
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="senate-image-type" data-target="#senate-diff" autocomplete="off"> Difference
+                        </label>
+                    </div>
+                </div>
+                <div id="senate-images">
+                    <div id="senate-compare">
+                        <img src="images/senate_before.png" />
+                        <img src="images/senate_after.png" />
+                    </div>
+                    <div id="senate-diff">
+                        <img src="images/senate_diff.png" />
+                    </div>
+                </div>
             </div>
             
             <div class="footer">

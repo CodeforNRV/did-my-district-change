@@ -25,26 +25,30 @@
                 padding-bottom: 30px;
             }
             
-            #house-before-after {
-                max-width: 454px;
+            #house-images {
+                max-width: 510px;
             }
             
             #senate-images {
                 max-width: 1080px;
             }
             
-            #house-before-after, #senate-images {
+            #house-images, #senate-images {
                 margin-left: auto;
                 margin-right: auto;
             }
             
-            #senate-diff {
+            .diff {
                 display: none;
             }
             
             .image-buttons {
                 padding-bottom: 5px;
                 text-align: center;
+            }
+            
+            .footer {
+                margin-top: 20px;
             }
         </style>
         
@@ -190,12 +194,17 @@
                     }
                 });
                 
-                $("#house-before-after").twentytwenty();
-                $("#senate-compare").twentytwenty();
+                $("#house-images .compare").twentytwenty();
+                $("#senate-images .compare").twentytwenty();
                 
                 $('input[name="senate-image-type"]').change(function() {
                     $('#senate-images > div').hide();
-                    $('#senate-images > ' + $(this).attr('data-target')).show();
+                    $('#senate-images > .' + $(this).attr('data-target')).show();
+                });
+                
+                $('input[name="house-image-type"]').change(function() {
+                    $('#house-images > div').hide();
+                    $('#house-images > .' + $(this).attr('data-target')).show();
                 });
             });
         </script>
@@ -206,6 +215,8 @@
                 <h2>Will My District Change?</h2>
                 <div>
                     <p>A couple of bills in the 2015 session of the Virginia General Assembly could slightly alter voting districts in Montgomery County. Enter your address to see if you will be affected.</p>
+                    <p>Find <a href="#details">more details</a> on these changes below.</p>
+                    <p style="font-size:12px">This site was created by volunteers and the information presented should not be considered official. Visit the <a href="http://elections.virginia.gov/">Virginia Department of Elections</a> for official information.</p>
                 </div>
             </div>
             
@@ -248,7 +259,7 @@
                 </div>
             </div>
             
-            <h3>Details</h3>
+            <h3 id="details">Details</h3>
             <div>
                 <p>As <a href="http://www.roanoke.com/news/politics/montgomery_county/virginia-senate-passes-bill-to-simplify-montgomery-county-elections/article_24584a06-71b8-587e-afb3-163e11dda872.html">reported by the Roanoke Times</a>, Del. Joseph Yost, R-Pearisburg, has sponsored two bills that aim to reduce the differences between town borders and voting district boundaries.</p>
                 
@@ -257,9 +268,24 @@
                     <a href="http://lis.virginia.gov/cgi-bin/legp604.exe?151+sum+HB1417">HB 1417 House of Delegates districts; technical adjustments.</a>
                 </div>
                 <p>The changes to the Virginia House Districts in Montgomery county are aimed at making the boundaries more closely match town borders. Use the slider on the image below to see how this bill will change the districts. District 7 in blue. District 8 in green. District 12 in yellow.</p>
-                <div id="house-before-after">
-                    <img src="images/house_before.png" />
-                    <img src="images/house_after.png" />
+                <div class="image-buttons">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default active">
+                            <input type="radio" name="house-image-type" data-target="twentytwenty-wrapper" autocomplete="off" checked> Compare
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="house-image-type" data-target="diff" autocomplete="off"> Difference
+                        </label>
+                    </div>
+                </div>
+                <div id="house-images">
+                    <div class="compare">
+                        <img src="images/house_before.png" />
+                        <img src="images/house_after.png" />
+                    </div>
+                    <div class="diff">
+                        <img src="images/house_diff.png" />
+                    </div>
                 </div>
                 
                 <h4>Senate District Changes</h4>
@@ -270,23 +296,22 @@
                 <div class="image-buttons">
                     <div class="btn-group" data-toggle="buttons">
                         <label class="btn btn-default active">
-                            <input type="radio" name="senate-image-type" data-target=".twentytwenty-wrapper" autocomplete="off" checked> Compare
+                            <input type="radio" name="senate-image-type" data-target="twentytwenty-wrapper" autocomplete="off" checked> Compare
                         </label>
                         <label class="btn btn-default">
-                            <input type="radio" name="senate-image-type" data-target="#senate-diff" autocomplete="off"> Difference
+                            <input type="radio" name="senate-image-type" data-target="diff" autocomplete="off"> Difference
                         </label>
                     </div>
                 </div>
                 <div id="senate-images">
-                    <div id="senate-compare">
+                    <div class="compare">
                         <img src="images/senate_before.png" />
                         <img src="images/senate_after.png" />
                     </div>
-                    <div id="senate-diff">
+                    <div class="diff">
                         <img src="images/senate_diff.png" />
                     </div>
                 </div>
-            </div>
             
             <div class="footer">
                 <p class="pull-right">

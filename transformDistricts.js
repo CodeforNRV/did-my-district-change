@@ -32,6 +32,12 @@ var house12to8 = JSON.parse(fs.readFileSync('maps/va_house_12_to_8_hb1417.geojso
 var house7to12 = JSON.parse(fs.readFileSync('maps/va_house_7_to_12_hb1417.geojson', 'utf8'));
 var house8to12 = JSON.parse(fs.readFileSync('maps/va_house_8_to_12_hb1417.geojson', 'utf8'));
 
+var mergedHouseChanges = turf.merge(house12to7);
+mergedHouseChanges = turf.union(mergedHouseChanges, turf.merge(house12to8));
+mergedHouseChanges = turf.union(mergedHouseChanges, turf.merge(house7to12));
+mergedHouseChanges = turf.union(mergedHouseChanges, turf.merge(house8to12));
+write('maps/va_house_all_changes_hb1417.geojson', mergedHouseChanges);
+
 for(var i=0; i<senateDistricts.features.length; i++) {
     var feature = senateDistricts.features[i];
     var featureName = feature.properties.namelsad;
